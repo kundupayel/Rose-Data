@@ -1,0 +1,53 @@
+---
+title: "Rose Data"
+author: "Payel Kundu"
+date: "5/14/2020"
+output: html_document
+---
+First I load the data
+```{r}
+library(readxl)
+rosedata <- read_excel("RoseData.xlsx")
+colnames(rosedata)
+```
+
+We want to know what factors predict how strongly a rose smells. First I'll plot smell against size. 
+```{r}
+ggscatter(rosedata, x = "Smell", y = "Size", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Smell", ylab = "Size")
+```
+So it looks like the larger the rose is, the less good it smells. The correlation is significant. Next I'll plot smell against color. 
+```{r}
+ggscatter(rosedata, x = "Smell", y = "Color", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Smell", ylab = "Color")
+```
+Color does not seem to be a good predictor of smell. They are not significantly correlated. Next I just want to check that my variables are normally distributed. 
+```{r}
+hist(rosedata$Smell)
+hist(rosedata$Size)
+```
+Size looks pretty good, but smell is skewed towards the lesser smells, we didn't have a lot of roses that smelled strongly. Next I'll check for outliers. 
+```{r}
+par(mfrow=c(1, 2))
+boxplot(rosedata$Smell, main="Color", sub=paste("Outlier rows: ", boxplot.stats(rosedata$Color)$out))
+boxplot(rosedata$Size, main="Size", sub=paste("Outlier rows: ", boxplot.stats(rosedata$Size)$out))
+```
+No outliers in the predictor variables, great! Now I'll build a linear model. 
+
+```{r}
+model1 <- lm(Smell ~ Color + Size, data = rosedata)
+summary(model1)
+
+```
+The model is significant, so we'll use it. I also want to see the interaction between the two factors. 
+```{r}
+model2 <- lm(Smell ~ Color*Size, data= rosedata)
+summary(model2)
+```
+
+
+
