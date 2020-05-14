@@ -49,5 +49,5 @@ model2 <- lm(Smell ~ Color*Size, data= rosedata)
 summary(model2)
 ```
 
-
+The model is significant, but there isn't a significant interacton, and actually including it in the model makes it less interpretable because we get rid of the effects of size and color. I'll stick with the model without the interaction term and conclude that small roses, and to a lesser extent deeply colored roses, have the best smells. 
 
